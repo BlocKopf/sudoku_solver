@@ -56,7 +56,7 @@ public class DataList<Typ1,Typ2>{
             DataSet<Typ1,Typ2>[]placeholder = this._extCopyList(-ext);
             boolean shift=false;
             for(int index=0;index<this._list.length;index++){
-                if(this._list[index].getIndex()==pos){shift=!shift;}
+                if(this._list[index].getIndex()==pos+1){shift=!shift;}
                 else{
                     if(shift){placeholder[index-1]=this._list[index];}
                     else{placeholder[index]=this._list[index];}
