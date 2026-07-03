@@ -6,8 +6,7 @@ public class DataList<Typ1,Typ2>{
 //------------------------------------------------------------------------------------------------------------
 //  FIELDS
 //------------------------------------------------------------------------------------------------------------
-    private String _type;
-    private int _nr;
+    private boolean _sizeLock;
     private DataSet<Typ1,Typ2>[] _list;
 //------------------------------------------------------------------------------------------------------------
 //  CONSTRUCTOR
@@ -34,26 +33,32 @@ public class DataList<Typ1,Typ2>{
 //  SHADOW ACTIONS
 //------------------------------------------------------------------------------------------------------------
     private void sAdd(Typ1 dec,Typ2 val){
-        DataSet<Typ1,Typ2>[]placeholder = this._extCopyList(1);
-        for(int index=0;index<this._list.length;index++){placeholder[index]=this._list[index];}
-        placeholder[placeholder.length-1] = new DataSet<Typ1,Typ2>(
-            placeholder.length,
-            dec,
-            val
-        );
-        this._overwrite(placeholder);
+        if(!this._sizeLock){
+            DataSet<Typ1,Typ2>[]placeholder = this._extCopyList(1);
+            for(int index=0;index<this._list.length;index++){placeholder[index]=this._list[index];}
+            placeholder[placeholder.length-1] = new DataSet<Typ1,Typ2>(
+                placeholder.length,
+                dec,
+                val
+            );
+            this._overwrite(placeholder);
+        }
     }
     private void sRemByPos(int pos){
-        DataSet<Typ1,Typ2>[]placeholder = this._extCopyList(-1);
-        boolean shift=false;
-        for(int index=0;index<this._list.length;index++){
-            if(this._list[index].getIndex()==pos){shift=!shift;}
-            else{
-                if(shift){placeholder[index-1]=this._list[index];}
-                else{placeholder[index]=this._list[index];}
+        if(pos>=0 && pos<this._list.length){
+            int ext;
+            if(this._sizeLock){ext=0;}else{ext=1;}
+            DataSet<Typ1,Typ2>[]placeholder = this._extCopyList(-ext);
+            boolean shift=false;
+            for(int index=0;index<this._list.length;index++){
+                if(this._list[index].getIndex()==pos){shift=!shift;}
+                else{
+                    if(shift){placeholder[index-1]=this._list[index];}
+                    else{placeholder[index]=this._list[index];}
+                }
             }
+            this._overwrite(placeholder);
         }
-        this._overwrite(placeholder);
     }
     private void sRemByDec(Typ1 dec){
         int detectCount=0;
@@ -110,6 +115,19 @@ public class DataList<Typ1,Typ2>{
         this.reIndex();
         return this;
     }
+    public void editPos(int pos,Typ1 dec,Typ2 val){
+        if(pos>=0 && pos<this._list.length){
+            for(int index=0;index<this._list.length;index++){
+                if(this._list[index].getIndex()==pos){
+                    this._list[index].rSetDeclaration(dec).setValue(val);
+                    break;
+                }
+            }
+        }
+    }
     public void print(){for(int index=0;index<this._list.length;index++){this.sPrint(index);}}
+    public void lockSize(){this._sizeLock=true;}
+    public void unlockSize(){this._sizeLock=false;}
+    public void changeLock(){this._sizeLock=!this._sizeLock;}
 //------------------------------------------------------------------------------------------------------------
 }
