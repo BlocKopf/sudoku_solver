@@ -17,7 +17,12 @@ public class DataList<Typ1,Typ2>{
 //------------------------------------------------------------------------------------------------------------
 //  REPETETIVE PROCESSING
 //------------------------------------------------------------------------------------------------------------
-    private void _init(int size){this._list = new DataSet[size];}
+    private void _init(int size){
+        this._list = new DataSet[size];
+        for(int index=0;index<this._list.length;index++){
+            this._list[index] = new DataSet<Typ1,Typ2>(index+1, null, null);
+        }
+    }
     private DataSet<Typ1,Typ2>[] _extCopyList(int ext){return new DataSet[this._list.length+ext];}
     private void _overwrite(DataSet<Typ1,Typ2>[] modelList){this._list=modelList;}
     private int[] _posList(int shiftCount){return new int[shiftCount];}
@@ -116,7 +121,7 @@ public class DataList<Typ1,Typ2>{
         return this;
     }
     public void editPos(int pos,Typ1 dec,Typ2 val){
-        if(pos>=0 && pos<this._list.length){
+        if(pos>0 && pos<=this._list.length){
             for(int index=0;index<this._list.length;index++){
                 if(this._list[index].getIndex()==pos){
                     this._list[index].rSetDeclaration(dec).setValue(val);
