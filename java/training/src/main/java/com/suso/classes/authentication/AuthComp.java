@@ -1,9 +1,16 @@
 package main.java.com.suso.classes.authentication;
+
+import com.suso.enums.UserComp;
+
 public class AuthComp {
 //FIELDS
     private String _content;
+    private UserComp _comp;
 //SHADOWS
-    protected void _init(){this.set(new String());}
+    protected void _init(){
+        this.set(new String());
+        this._comp = UserComp.get(null);
+    }
 //CONSTRUCTORS
     public User(){this._init();}
 //SETTER
